@@ -1,0 +1,4 @@
+Roses are red,
+violets are blue
+at first I had problems with Git
+but now I don’t woohoo
