@@ -138,12 +138,12 @@ public class FitnessAB_MEMBERMANAGEMENT {
                case "D":
                case "d":
                   
-                  SQL = "select FName, EName, PhoneNr, Email from member where memberid = ?;";
+                  SQL = "select memberid, FName, EName, PhoneNr, Email, membershipid from member left natural join membership where memberid = ?;";
                   statement = conn.prepareStatement(SQL);
                   
-                  Input = JOptionPane.showInputDialog("what member do you want information about? memberID");
+                  Input = JOptionPane.showInputDialog("what member do you want information about? memberID or * for info on all members");
                    if(Input.equals("*")){
-                    SQL = "select FName, EName, PhoneNr, Email from member;";
+                    SQL = "select memberid, FName, EName, PhoneNr, Email, membershipid from member left natural join membership;";
                     statement = conn.prepareStatement(SQL);
                    } 
                    else{
@@ -155,12 +155,15 @@ public class FitnessAB_MEMBERMANAGEMENT {
                   resultat = "This is the members information: \n";
                   
                   while(rs.next()){
-                     String fname = rs.getString(1);
-                     String ename = rs.getString(2);
-                     String phone = rs.getString(3);
-                     String email = rs.getString(4);
+                     int memid = rs.getInt(1);
+                     String fname = rs.getString(2);
+                     String ename = rs.getString(3);
+                     String phone = rs.getString(4);
+                     String email = rs.getString(5);
+                     int membid = rs.getInt(6);
                      
-                     resultat = resultat + fname + " " + ename + " " + phone + " " + email + "\n";
+                     resultat = resultat + "MemberID: " + memid + "\n Name: " +fname + " " + ename + "\n Phone#: " + phone + 
+                                "\n Email: " + email + "\n membershiptier: " + membid + "\n \n";
                   }
                      
                   JOptionPane.showMessageDialog(null, resultat);
