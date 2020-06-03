@@ -32,7 +32,8 @@ public class FitnessAB_EMPLOYEEMANAGEMENT {
                                                    "D - Punch out\n" +
                                                    "E - get employee info \n" +
                                                    "F - info about sick employees \n" +
-                                                   "G - info about who teaches a course \n");
+                                                   "G - info about who teaches a course \n" +
+                                                   "H - remove employee from database");
                                                    
         if(Input == null){
          System.exit(0);
@@ -153,24 +154,31 @@ public class FitnessAB_EMPLOYEEMANAGEMENT {
                 case "E":
                 case "e":
                  
-                 SQL = "select FNAME, ENAME, PHONENR, EMAILADDRESS, ADMINID from EMPLOYEE where EMPLOYEEID = ?";
+                 SQL = "select EMPLOYEEID, FNAME, ENAME, PHONENR, EMAILADDRESS, ADMINID from EMPLOYEE where EMPLOYEEID = ?";
                  statement = conn.prepareStatement(SQL);
                  
-                 Input = JOptionPane.showInputDialog("Which Employee do you want information about? \n Enter employeeID");
-                 i = Integer.parseInt(Input);
-                 statement.setInt(1, i);
-                 
+                 Input = JOptionPane.showInputDialog("Which Employee do you want information about? \n Enter employeeID or * for all employees");
+                   if(Input.equals("*")){
+                    SQL = "select employeeID, FName, EName, PhoneNr, Emailaddress, adminid from employee;";
+                    statement = conn.prepareStatement(SQL);
+                   } 
+                   else{
+                    i = Integer.parseInt(Input);
+                    statement.setInt(1, i);
+                   }
+                   
                  rs = statement.executeQuery();
                  
-                 String result = "";
+                 String result = "This is the employee's information: \n";
                  while(rs.next()){
-                  String fname = rs.getString(1);
-                  String ename = rs.getString(2);
-                  String phonenr = rs.getString(3);
-                  String email = rs.getString(4);
-                  int adminid = rs.getInt(5);
-                  result = "This is the employee's information: \n Name:" + fname +" " + ename +
-                                  "\n Phone#:" + phonenr + "\n Email: " + email + "\n Admin: " + adminid;
+                  int id = rs.getInt(1);
+                  String fname = rs.getString(2);
+                  String ename = rs.getString(3);
+                  String phonenr = rs.getString(4);
+                  String email = rs.getString(5);
+                  int adminid = rs.getInt(6);
+                  result = result + "EmpID:" + id + "\n Name:" + fname +" " + ename +
+                           "\n Phone#:" + phonenr + "\n Email: " + email + "\n Admin: " + adminid + "\n \n";
                  }               
                   JOptionPane.showMessageDialog(null, result);
                 break;
@@ -228,6 +236,26 @@ public class FitnessAB_EMPLOYEEMANAGEMENT {
                 
                 break;
                 
+               case "H":
+               case "h":
+                  
+                  SQL = "delete from employee where employeeid = ?";
+                  statement = conn.prepareStatement(SQL);
+                  
+                  Input = JOptionPane.showInputDialog("which employee do you want to remove? employeeid");
+                  i = Integer.parseInt(Input);
+                  statement.setInt(1, i);
+                  
+                  int opt = JOptionPane.showConfirmDialog(null, "Are you sure?", "warning", JOptionPane.YES_NO_OPTION);
+                   if(opt == 0){
+                    statement.executeUpdate();
+                    JOptionPane.showMessageDialog(null, "The member was deleted");
+                   }
+                   else{
+                    JOptionPane.showMessageDialog(null, "The action was cancelled");
+                    break;
+                   }
+               break;
                 default:
                  System.exit(0);
                 break;

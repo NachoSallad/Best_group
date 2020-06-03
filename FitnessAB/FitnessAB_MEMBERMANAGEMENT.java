@@ -31,7 +31,8 @@ public class FitnessAB_MEMBERMANAGEMENT {
                                                    "B - start new membership \n" +
                                                    "C - See booked courses \n" +
                                                    "D - get member information \n" +
-                                                   "E - cancel a membership \n");
+                                                   "E - cancel a membership \n" +
+                                                   "F - remove member \n");
        if(Input == null){
          System.exit(0);
         }
@@ -141,9 +142,14 @@ public class FitnessAB_MEMBERMANAGEMENT {
                   statement = conn.prepareStatement(SQL);
                   
                   Input = JOptionPane.showInputDialog("what member do you want information about? memberID");
-                  i = Integer.parseInt(Input);
-                  statement.setInt(1, i);
-                  
+                   if(Input.equals("*")){
+                    SQL = "select FName, EName, PhoneNr, Email from member;";
+                    statement = conn.prepareStatement(SQL);
+                   } 
+                   else{
+                    i = Integer.parseInt(Input);
+                    statement.setInt(1, i);
+                   }
                   rs = statement.executeQuery();
                   
                   resultat = "This is the members information: \n";
@@ -154,7 +160,7 @@ public class FitnessAB_MEMBERMANAGEMENT {
                      String phone = rs.getString(3);
                      String email = rs.getString(4);
                      
-                     resultat = resultat + fname + " " + ename + " " + phone + " " + email;
+                     resultat = resultat + fname + " " + ename + " " + phone + " " + email + "\n";
                   }
                      
                   JOptionPane.showMessageDialog(null, resultat);
@@ -176,6 +182,27 @@ public class FitnessAB_MEMBERMANAGEMENT {
                          
                   
                break; 
+               
+               case "F":
+               case "f":
+                  
+                  SQL = "delete from member where memberid = ?";
+                  statement = conn.prepareStatement(SQL);
+                  
+                  Input = JOptionPane.showInputDialog("which member do you want to remove? memberid");
+                  i = Integer.parseInt(Input);
+                  statement.setInt(1, i);
+                  
+                  int opt = JOptionPane.showConfirmDialog(null, "Are you sure?", "warning", JOptionPane.YES_NO_OPTION);
+                   if(opt == 0){
+                    statement.executeUpdate();
+                    JOptionPane.showMessageDialog(null, "The member was deleted");
+                   }
+                   else{
+                    JOptionPane.showMessageDialog(null, "The action was cancelled");
+                    break;
+                   }
+               break;
                
                default:
                 System.exit(0);
